@@ -15,17 +15,7 @@ public class CameraScript : MonoBehaviour
 	{
 		if (this.ps.jumpRope)
 		{
-			this.velocity -= this.gravity * Time.deltaTime;
-			this.jumpHeight += this.velocity * Time.deltaTime;
-			if (this.jumpHeight <= 0f)
-			{
-				this.jumpHeight = 0f;
-				if (Input.GetKeyDown(KeyCode.Space))
-				{
-					this.velocity = this.initVelocity;
-				}
-			}
-			this.jumpHeightV3 = new Vector3(0f, this.jumpHeight, 0f);
+
 		}
 		else if (Input.GetButton("Look Behind"))
 		{
@@ -49,7 +39,7 @@ public class CameraScript : MonoBehaviour
 		else if (this.ps.gameOver)
 		{
 			base.transform.position = this.baldi.transform.position + this.baldi.transform.forward * 2f + new Vector3(0f, 5f, 0f);
-			base.transform.LookAt(new Vector3(this.baldi.position.x, this.baldi.position.y + 5f, this.baldi.position.z));
+			base.transform.LookAt(new Vector3(this.baldi.position.x, this.baldi.position.y + 3f, this.baldi.position.z));
 		}
 		else if (this.ps.jumpRope)
 		{

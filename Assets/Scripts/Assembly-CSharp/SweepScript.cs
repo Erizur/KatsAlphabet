@@ -63,6 +63,7 @@ public class SweepScript : MonoBehaviour
 		this.waitTime = UnityEngine.Random.Range(120f, 180f);
 		this.wanders = 0;
 		this.active = false;
+		this.audioDevice.PlayOneShot(this.aud_Done);
 	}
 
 	// Token: 0x060009F2 RID: 2546 RVA: 0x00026992 File Offset: 0x00024D92
@@ -100,6 +101,8 @@ public class SweepScript : MonoBehaviour
 
 	// Token: 0x04000723 RID: 1827
 	public AudioClip aud_Intro;
+
+	public AudioClip aud_Done;
 
 	// Token: 0x04000724 RID: 1828
 	private NavMeshAgent agent;

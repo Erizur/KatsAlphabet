@@ -8,12 +8,13 @@ public class JumpRopeScript : MonoBehaviour
     // Token: 0x06000048 RID: 72 RVA: 0x000033A4 File Offset: 0x000017A4
     private void OnEnable()
     {
-        this.jumpDelay = 1f;
+        this.jumpDelay = 0.1f;
         this.ropeHit = true;
         this.jumpStarted = false;
         this.jumps = 0;
-        this.jumpCount.text = 0 + "/5";
+        this.jumpCount.text = 0 + "/10";
         this.cs.jumpHeight = 0f;
+        this.playtime.audioDevice.pitch = 1f;
         this.playtime.audioDevice.PlayOneShot(this.playtime.aud_ReadyGo);
     }
 
@@ -27,8 +28,8 @@ public class JumpRopeScript : MonoBehaviour
         else if (!this.jumpStarted)
         {
             this.jumpStarted = true;
-            this.ropePosition = 1f;
-            this.rope.SetTrigger("ActivateJumpRope");
+            this.ropePosition = 0.1f;
+            //this.rope.SetTrigger("ActivateJumpRope");
             this.ropeHit = false;
         }
         if (this.ropePosition > 0f)
@@ -44,29 +45,25 @@ public class JumpRopeScript : MonoBehaviour
     // Token: 0x0600004A RID: 74 RVA: 0x000034B8 File Offset: 0x000018B8
     private void RopeHit()
     {
-        this.ropeHit = true;
-        if (this.cs.jumpHeight <= 0.2f)
-        {
-            this.Fail();
-        }
-        else
+        if(Input.GetKeyDown(KeyCode.Space))
         {
             this.Success();
         }
-        this.jumpStarted = false;
     }
 
     // Token: 0x0600004B RID: 75 RVA: 0x000034F0 File Offset: 0x000018F0
     private void Success()
     {
         this.playtime.audioDevice.Stop();
-        this.playtime.audioDevice.PlayOneShot(this.playtime.aud_Numbers[this.jumps]);
+        this.playtime.audioDevice.pitch = UnityEngine.Random.Range(0.9f, 1.1f);
+        this.playtime.audioDevice.PlayOneShot(this.playtime.aud_Numbers[0]);
         this.jumps++;
-        this.jumpCount.text = this.jumps + "/5";
-        this.jumpDelay = 0.5f;
-        if (this.jumps >= 5)
+        this.jumpCount.text = this.jumps + "/10";
+        this.jumpDelay = 0.2f;
+        if (this.jumps >= 10)
         {
             this.playtime.audioDevice.Stop();
+            this.playtime.audioDevice.pitch = 1f;
             this.playtime.audioDevice.PlayOneShot(this.playtime.aud_Congrats);
             this.ps.DeactivateJumpRope();
         }
@@ -76,8 +73,9 @@ public class JumpRopeScript : MonoBehaviour
     private void Fail()
     {
         this.jumps = 0;
-        this.jumpCount.text = this.jumps + "/5";
+        this.jumpCount.text = this.jumps + "/10";
         this.jumpDelay = 2f;
+        this.playtime.audioDevice.pitch = 1f;
         this.playtime.audioDevice.PlayOneShot(this.playtime.aud_Oops);
     }
 

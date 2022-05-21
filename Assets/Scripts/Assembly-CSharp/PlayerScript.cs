@@ -27,7 +27,9 @@ public class PlayerScript : MonoBehaviour
 	{
 		base.transform.position = new Vector3(base.transform.position.x, this.height, base.transform.position.z);
 		this.MouseMove();
-		this.PlayerMove();
+		if(this.isStuck == false){
+			this.PlayerMove();
+		}
 		this.StaminaCheck();
 		this.GuiltCheck();
 		if (this.cc.velocity.magnitude > 0f)
@@ -112,7 +114,7 @@ public class PlayerScript : MonoBehaviour
 			{
 				this.moveDirection = (this.firstPrize.velocity * 1.2f * Time.deltaTime + (new Vector3(this.firstPrizeTransform.position.x, this.height, this.firstPrizeTransform.position.z) + new Vector3((float)Mathf.RoundToInt(this.firstPrizeTransform.forward.x), 0f, (float)Mathf.RoundToInt(this.firstPrizeTransform.forward.z)) * 3f - base.transform.position)) * (float)this.principalBugFixer;
 			}
-			else if (this.jumpRope)
+			else if (this.jumpRope || this.isStuck)
 			{
 				this.moveDirection = new Vector3(0f, 0f, 0f);
 			}
@@ -150,7 +152,7 @@ public class PlayerScript : MonoBehaviour
 			RenderSettings.skybox = this.blackSky;
 			base.StartCoroutine(this.KeepTheHudOff());
 		}
-		else if (other.transform.name == "Playtime" & !this.jumpRope & this.playtime.playCool <= 0f)
+		else if (other.transform.name == "Playtime" & !this.jumpRope & this.playtime.playCool <= 0f & ignoreMagician == false)
 		{
 			this.ActivateJumpRope();
 		}
@@ -280,6 +282,11 @@ public class PlayerScript : MonoBehaviour
 
 	// Token: 0x040006F1 RID: 1777
 	public bool bootsActive;
+
+	public bool ignoreMagician;
+	public bool ignorePrincipal;
+
+	public bool isStuck;
 
 	// Token: 0x040006F2 RID: 1778
 	public int principalBugFixer;

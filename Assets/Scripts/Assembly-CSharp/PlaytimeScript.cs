@@ -38,7 +38,7 @@ public class PlaytimeScript : MonoBehaviour
 		{
 			Vector3 direction = this.player.position - base.transform.position;
 			RaycastHit raycastHit;
-			if (Physics.Raycast(base.transform.position, direction, out raycastHit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore) & raycastHit.transform.tag == "Player" & (base.transform.position - this.player.position).magnitude <= 80f & this.playCool <= 0f)
+			if (Physics.Raycast(base.transform.position, direction, out raycastHit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore) & raycastHit.transform.tag == "Player" & (base.transform.position - this.player.position).magnitude <= 80f & this.playCool <= 0f && this.ps.ignoreMagician == false)
 			{
 				this.playerSeen = true;
 				this.TargetPlayer();
@@ -146,7 +146,7 @@ public class PlaytimeScript : MonoBehaviour
 	private NavMeshAgent agent;
 
 	// Token: 0x04000083 RID: 131
-	public AudioClip[] aud_Numbers = new AudioClip[10];
+	public AudioClip[] aud_Numbers = new AudioClip[1];
 
 	// Token: 0x04000084 RID: 132
 	public AudioClip[] aud_Random = new AudioClip[2];

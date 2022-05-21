@@ -77,14 +77,33 @@ public class BullyScript : MonoBehaviour
 			}
 			else
 			{
+				int chance = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 2f));
 				int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 2f));
 				while (this.gc.item[num] == 0)
 				{
 					num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 2f));
 				}
-				this.gc.LoseItem(num);
-				int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
-				this.audioDevice.PlayOneShot(this.aud_Thanks[num2]);
+				int randomItem = Mathf.RoundToInt(UnityEngine.Random.Range(1f, 9f));
+				switch(chance){
+					case 0:
+						this.gc.CollectItem(randomItem);
+						this.audioDevice.PlayOneShot(this.aud_Thanks[1]);
+						break;
+					case 1:
+						this.gc.LoseItem(num);
+						this.audioDevice.PlayOneShot(this.aud_Thanks[0]);
+						break;
+					case 2:
+						this.gc.CollectItem(randomItem);
+						num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 2f));
+						randomItem = Mathf.RoundToInt(UnityEngine.Random.Range(1f, 9f));
+						this.gc.itemSelected = num;
+						this.gc.CollectItem(randomItem);
+						this.audioDevice.PlayOneShot(this.aud_Thanks[1]);
+						break;
+					default:
+						break;
+				}
 				this.Reset();
 			}
 		}

@@ -22,7 +22,6 @@ public class MathGameScript : MonoBehaviour
         if (this.gc.notebooks == 1)
         {
             this.QueueAudio(this.bal_intro);
-            this.QueueAudio(this.bal_howto);
         }
         this.NewProblem();
         if (this.gc.spoopMode)
@@ -56,8 +55,28 @@ public class MathGameScript : MonoBehaviour
             this.endDelay -= 1f * Time.unscaledDeltaTime;
             if (this.endDelay <= 0f)
             {
-                GC.Collect();
-                this.ExitGame();
+                if(this.gc.notebooks < 2)
+                {
+                    GC.Collect();
+                    if(this.problemsWrong >= 3 && this.gc.notebooks == 2){
+                        this.gc.RestartLearningGame(base.gameObject);
+                    }
+                    else{
+                        this.gc.CollectNotebook();
+                        this.gc.RestartLearningGame(base.gameObject);
+                    }
+
+                }
+                else
+                {
+                    GC.Collect();
+                    if(this.problemsWrong >= 3){
+                        this.gc.RestartLearningGame(base.gameObject);
+                    }
+                    else{
+                        this.ExitGame();
+                    }
+                }
             }
         }
     }
@@ -192,9 +211,17 @@ public class MathGameScript : MonoBehaviour
         else
         {
             this.endDelay = 5f;
-            if (!this.gc.spoopMode)
+            if (!this.gc.spoopMode && this.gc.notebooks < 2 && this.problemsWrong <= 1)
             {
-                this.questionText.text = "WOW! YOU EXIST!";
+                this.questionText.text = "Great Job!";
+            }
+            else if(!this.gc.spoopMode && this.gc.notebooks < 2 && this.problemsWrong <= 2)
+            {
+                this.questionText.text = "It's okay, you can do better!";
+            }
+            else if(!this.gc.spoopMode && this.gc.notebooks >= 2 && this.problemsWrong < 3)
+            {
+                this.questionText.text = "You finished the game!";
             }
             else if (this.gc.mode == "endless" & this.problemsWrong <= 0)
             {
@@ -203,9 +230,10 @@ public class MathGameScript : MonoBehaviour
             }
             else if (this.gc.mode == "story" & this.problemsWrong >= 4)
             {
-                this.questionText.text = "I HEAR MATH THAT BAD";
+                this.questionText.text = "You have answered \neverything incorrectly.";
                 this.questionText2.text = string.Empty;
                 this.questionText3.text = string.Empty;
+                this.questionText4.text = string.Empty;
                 if (this.baldiScript.isActiveAndEnabled) this.baldiScript.Hear(this.playerPosition, 7f);
                 this.gc.failedNotebooks++;
             }
@@ -215,6 +243,15 @@ public class MathGameScript : MonoBehaviour
                 this.questionText.text = this.hintText[num2];
                 this.questionText2.text = string.Empty;
                 this.questionText3.text = string.Empty;
+                this.questionText4.text = string.Empty;
+            }
+            if(!this.gc.spoopMode && this.gc.notebooks < 2 && this.problemsWrong <= 2)
+            {
+                this.questionText.text = this.questionText.text + "\nMore questions coming...";
+            }
+            else if(!this.gc.spoopMode && this.gc.notebooks == 2 && this.problemsWrong >= 3)
+            {
+                this.questionText.text = this.questionText.text + "\nRestarting game...";
             }
         }
     }
@@ -245,7 +282,7 @@ public class MathGameScript : MonoBehaviour
                 this.results[this.problem - 1].texture = this.correct;
                 this.baldiAudio.Stop();
                 this.ClearAudioQueue();
-                int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 4f));
+                int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 3f));
                 this.QueueAudio(this.bal_praises[num]);
                 this.NewProblem();
             }
@@ -253,28 +290,36 @@ public class MathGameScript : MonoBehaviour
             {
                 this.problemsWrong++;
                 this.results[this.problem - 1].texture = this.incorrect;
+                this.baldiAudio.Stop();
+                this.ClearAudioQueue();
                 if (!this.gc.spoopMode)
                 {
-                    this.baldiFeed.SetTrigger("angry");
-                    this.gc.ActivateSpoopMode();
+                    if(this.problemsWrong >= 4 && this.gc.notebooks == 2){
+                        this.QueueAudio(this.bal_allwrong);
+                    }
+                    else{
+                        this.QueueAudio(this.bal_wrong);
+                    }
+                    //this.baldiFeed.SetTrigger("angry");
+                    //this.gc.ActivateSpoopMode();
                 }
-                if (this.gc.mode == "story")
-                {
-                    if (this.problem == 4)
+                else{
+                    if (this.gc.mode == "story")
                     {
-                        this.baldiScript.GetAngry(1f);
+                        if (this.problem == 4)
+                        {
+                            this.baldiScript.GetAngry(1f);
+                        }
+                        else
+                        {
+                            this.baldiScript.GetTempAngry(0.25f);
+                        }
                     }
                     else
                     {
-                        this.baldiScript.GetTempAngry(0.25f);
+                        this.baldiScript.GetAngry(1f);
                     }
                 }
-                else
-                {
-                    this.baldiScript.GetAngry(1f);
-                }
-                this.ClearAudioQueue();
-                this.baldiAudio.Stop();
                 this.NewProblem();
             }
         }
@@ -345,6 +390,7 @@ public class MathGameScript : MonoBehaviour
             this.questionText.text = text;
             this.questionText2.text = string.Empty;
             this.questionText3.text = string.Empty;
+            this.questionText4.text = string.Empty;
             yield return new WaitForEndOfFrame();
         }
         yield break;
@@ -391,38 +437,21 @@ public class MathGameScript : MonoBehaviour
     // Token: 0x0400064D RID: 1613
     public Transform baldiFeedTransform;
 
-    // Token: 0x0400064E RID: 1614
-    public AudioClip bal_plus;
-
-    // Token: 0x0400064F RID: 1615
-    public AudioClip bal_minus;
-
-    // Token: 0x04000650 RID: 1616
-    public AudioClip bal_times;
-
-    // Token: 0x04000651 RID: 1617
-    public AudioClip bal_divided;
-
-    // Token: 0x04000652 RID: 1618
-    public AudioClip bal_equals;
-
-    // Token: 0x04000653 RID: 1619
-    public AudioClip bal_howto;
-
     // Token: 0x04000654 RID: 1620
     public AudioClip bal_intro;
 
     // Token: 0x04000655 RID: 1621
     public AudioClip bal_screech;
 
-    // Token: 0x04000656 RID: 1622
-    public AudioClip[] bal_numbers = new AudioClip[10];
-
     // Token: 0x04000657 RID: 1623
-    public AudioClip[] bal_praises = new AudioClip[5];
+    public AudioClip[] bal_praises = new AudioClip[4];
 
     // Token: 0x04000658 RID: 1624
     public AudioClip[] bal_problems = new AudioClip[3];
+
+    public AudioClip bal_wrong;
+
+    public AudioClip bal_allwrong;
 
     // Token: 0x0400065A RID: 1626
     private float endDelay;
@@ -453,8 +482,8 @@ public class MathGameScript : MonoBehaviour
     // Token: 0x04000662 RID: 1634
     private string[] hintText = new string[]
     {
-        "I GET ANGRIER FOR EVERY PROBLEM YOU GET WRONG",
-        "I HEAR EVERY DOOR YOU OPEN"
+        "You will get it right next time!",
+        "Nice try!"
     };
 
     // Token: 0x04000663 RID: 1635

@@ -16,7 +16,7 @@ public class PrincipalScript : MonoBehaviour
 	// Token: 0x060009BD RID: 2493 RVA: 0x00024F94 File Offset: 0x00023394
 	private void Update()
 	{
-		if (this.seesRuleBreak)
+		if (this.seesRuleBreak && this.playerScript.ignorePrincipal == false)
 		{
 			this.timeSeenRuleBreak += 1f * Time.deltaTime;
 			if ((double)this.timeSeenRuleBreak >= 0.5 & !this.angry)
@@ -145,9 +145,10 @@ public class PrincipalScript : MonoBehaviour
 			this.audioQueue.QueueAudio(this.aud_Delay);
 			this.audioQueue.QueueAudio(this.audTimes[this.detentions]);
 			this.audioQueue.QueueAudio(this.audDetention);
-			int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 2f));
+			int num = 0;
 			this.audioQueue.QueueAudio(this.audScolds[num]);
 			this.officeDoor.LockDoor((float)this.lockTime[this.detentions]);
+			this.officeDoor2.LockDoor((float)this.lockTime[this.detentions]);
             if (this.baldiScript.isActiveAndEnabled) this.baldiScript.Hear(base.transform.position, 8f);
             this.coolDown = 5f;
 			this.angry = false;
@@ -202,6 +203,8 @@ public class PrincipalScript : MonoBehaviour
 	// Token: 0x040006C1 RID: 1729
 	public DoorScript officeDoor;
 
+	public DoorScript officeDoor2;
+
 	// Token: 0x040006C2 RID: 1730
 	public float coolDown;
 
@@ -231,7 +234,7 @@ public class PrincipalScript : MonoBehaviour
 	public AudioClip[] audTimes = new AudioClip[5];
 
 	// Token: 0x040006C9 RID: 1737
-	public AudioClip[] audScolds = new AudioClip[3];
+	public AudioClip[] audScolds = new AudioClip[1];
 
 	// Token: 0x040006CA RID: 1738
 	public AudioClip audDetention;

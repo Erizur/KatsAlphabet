@@ -29,6 +29,8 @@ public class GameControllerScript : MonoBehaviour
 		this.schoolMusic.Play();
 		this.LockMouse();
 		this.UpdateNotebookCount();
+		this.hideNotebooks(true);
+		this.LoadPets();
 		this.itemSelected = 0;
 		this.gameOverDelay = 0.5f;
 	}
@@ -147,13 +149,13 @@ public class GameControllerScript : MonoBehaviour
 	{
 		if (this.mode == "story")
 		{
-			this.notebookCount.text = this.notebooks.ToString() + "/7 Notebooks";
+			this.notebookCount.text = this.notebooks.ToString() + "/8 Notebooks";
 		}
 		else
 		{
 			this.notebookCount.text = this.notebooks.ToString() + " Notebooks";
 		}
-		if (this.notebooks == 7 & this.mode == "story")
+		if (this.notebooks == 8 & this.mode == "story")
 		{
 			this.ActivateFinaleMode();
 		}
@@ -164,6 +166,14 @@ public class GameControllerScript : MonoBehaviour
 	{
 		this.notebooks++;
 		this.UpdateNotebookCount();
+	}
+
+	public void hideNotebooks(bool hide)
+	{
+		foreach (GameObject gameObject in this.notebooksToHide)
+		{
+			gameObject.SetActive(!hide);
+		}
 	}
 
 	// Token: 0x06000968 RID: 2408 RVA: 0x0002203A File Offset: 0x0002043A
@@ -218,6 +228,8 @@ public class GameControllerScript : MonoBehaviour
     public void ActivateSpoopMode()
 	{
 		this.spoopMode = true;
+		this.classTime = false;
+		this.exploreScript.exploreTimer = 0f;
 		this.entrance_0.Lower();
 		this.entrance_1.Lower();
 		this.entrance_2.Lower();
@@ -233,16 +245,32 @@ public class GameControllerScript : MonoBehaviour
 		this.audioDevice.PlayOneShot(this.aud_Hang);
 		this.learnMusic.Stop();
 		this.schoolMusic.Stop();
+		this.hideNotebooks(false);
 	}
 
 	// Token: 0x0600096E RID: 2414 RVA: 0x000221BF File Offset: 0x000205BF
 	private void ActivateFinaleMode()
 	{
+		this.baldiScrpt.finalMode = true;
 		this.finaleMode = true;
 		this.entrance_0.Raise();
 		this.entrance_1.Raise();
 		this.entrance_2.Raise();
 		this.entrance_3.Raise();
+	}
+
+	private void ActivateFinalFinalMode()
+	{
+		this.baldiScrpt.finalMode = false;
+	}
+
+	public void ActivateClassTime()
+	{
+		this.player.isStuck = true;
+		this.player.transform.position = this.playerTeleport.transform.position;
+		this.audioDevice.PlayOneShot(this.aud_bellRing);
+		this.audioDevice.PlayOneShot(this.aud_ClassAgain);
+		this.classTime = false;
 	}
 
 	// Token: 0x0600096F RID: 2415 RVA: 0x000221F4 File Offset: 0x000205F4
@@ -264,8 +292,11 @@ public class GameControllerScript : MonoBehaviour
 		this.tutorBaldi.Stop();
 		if (!this.spoopMode)
 		{
-			this.schoolMusic.Stop();
-			this.learnMusic.Play();
+			if(!learnMusic.isPlaying)
+			{
+				this.schoolMusic.Stop();
+				this.learnMusic.Play();
+			}
 		}
 	}
 
@@ -284,15 +315,31 @@ public class GameControllerScript : MonoBehaviour
 			this.schoolMusic.Play();
 			this.learnMusic.Stop();
 		}
-		if (this.notebooks == 1 & !this.spoopMode)
+		if (this.notebooks == 2 & !this.spoopMode)
 		{
+			this.teleportKat();
 			this.quarter.SetActive(true);
 			this.tutorBaldi.PlayOneShot(this.aud_Prize);
+			this.exploreScript.exploreTimer = 140f;
+			this.classTime = true;
 		}
-		else if (this.notebooks == 7 & this.mode == "story")
+		else if (this.notebooks == 8 & this.mode == "story")
 		{
 			this.audioDevice.PlayOneShot(this.aud_AllNotebooks, 0.8f);
 		}
+	}
+
+	public void teleportKat()
+	{
+		this.tutorBaldi.transform.position = this.katTeleport.transform.position;
+	}
+
+	public void RestartLearningGame(GameObject subject){
+		UnityEngine.Object.Destroy(subject);
+		GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(this.learnGame);
+		gameObject.GetComponent<MathGameScript>().gc = this;
+		gameObject.GetComponent<MathGameScript>().baldiScript = this.baldiScrpt;
+		gameObject.GetComponent<MathGameScript>().playerPosition = this.playerTransform.position;
 	}
 
 	// Token: 0x06000972 RID: 2418 RVA: 0x00022360 File Offset: 0x00020760
@@ -350,6 +397,46 @@ public class GameControllerScript : MonoBehaviour
 			this.itemSlot[this.itemSelected].texture = this.itemTextures[item_ID];
 		}
 		this.UpdateItemName();
+	}
+
+	public void LoadPets()
+	{
+		int pet1 = PlayerPrefs.GetInt("PetRock");
+		int pet2 = PlayerPrefs.GetInt("PetGrass");
+		int pet3 = PlayerPrefs.GetInt("PetHairball");
+		if(pet1 == 1 && pet2 == 1 && pet3 == 1)
+		{
+			allPets = true;
+		}
+	}
+
+	public void CollectPet(int pet_ID)
+	{
+		if (this.pet == 0)
+		{
+			this.pet = pet_ID;
+			this.petSlot.texture = this.petTextures[pet_ID - 1]; //so it doesndt mess up
+		}
+		GivePetAdvantage();
+	}
+
+	public void GivePetAdvantage(){
+		switch(this.pet)
+		{
+			case 1:
+				this.player.maxStamina = this.player.maxStamina + 100f;
+				this.player.staminaRate = this.player.staminaRate + 10f;
+				this.player.stamina = this.player.maxStamina;
+				break;
+			case 2:
+				this.player.ignoreMagician = true;
+				break;
+			case 3:
+				this.player.ignorePrincipal = true;
+				break;
+			default:
+				break;
+		}
 	}
 
 	// Token: 0x06000976 RID: 2422 RVA: 0x00022528 File Offset: 0x00020928
@@ -538,12 +625,10 @@ public class GameControllerScript : MonoBehaviour
 		this.exitsReached++;
 		if (this.exitsReached == 1)
 		{
-			RenderSettings.ambientLight = Color.red;
+			RenderSettings.ambientLight = Color.gray;
             //RenderSettings.fog = true;
-            this.audioDevice.PlayOneShot(this.aud_Switch, 0.8f);
-			this.audioDevice.clip = this.aud_MachineQuiet;
-			this.audioDevice.loop = true;
-			this.audioDevice.Play();
+			this.ActivateFinalFinalMode();
+            this.audioDevice.PlayOneShot(this.aud_RUN, 0.8f);
 		}
 		if (this.exitsReached == 2)
 		{
@@ -593,6 +678,8 @@ public class GameControllerScript : MonoBehaviour
 	// Token: 0x040005FC RID: 1532
 	private int cullingMask;
 
+	private bool allPets = false;
+
 	// Token: 0x040005FD RID: 1533
 	public EntranceScript entrance_0;
 
@@ -620,8 +707,14 @@ public class GameControllerScript : MonoBehaviour
 	// Token: 0x04000605 RID: 1541
 	public AudioClip aud_PrizeMobile;
 
+	public AudioClip aud_ClassAgain;
+
+	public AudioClip aud_bellRing;
+
 	// Token: 0x04000606 RID: 1542
 	public AudioClip aud_AllNotebooks;
+
+	public AudioClip aud_RUN;
 
 	// Token: 0x04000607 RID: 1543
 	public GameObject principal;
@@ -680,6 +773,8 @@ public class GameControllerScript : MonoBehaviour
 	// Token: 0x04000619 RID: 1561
 	public bool mouseLocked;
 
+	public bool classTime;
+
 	// Token: 0x0400061A RID: 1562
 	public int exitsReached;
 
@@ -689,23 +784,27 @@ public class GameControllerScript : MonoBehaviour
 	// Token: 0x0400061C RID: 1564
 	public int[] item = new int[3];
 
+	public int pet;
+
 	// Token: 0x0400061D RID: 1565
 	public RawImage[] itemSlot = new RawImage[3];
+
+	public RawImage petSlot;
 
 	// Token: 0x0400061E RID: 1566
 	private string[] itemNames = new string[]
 	{
 		"Nothing",
-		"Energy flavored Zesty Bar",
-		"Yellow Door Lock",
-		"Principal's Keys",
-		"BSODA",
-		"Quarter",
-		"Baldi Anti Hearing and Disorienting Tape",
-		"Alarm Clock",
-		"WD-NoSquee (Door Type)",
-		"Safety Scissors",
-		"Big Ol' Boots"
+		"Bag of Healthy Apples",
+		"Instant Walls Inc. Spray",
+		"Kat's Class Keys",
+		"Combination of Oxygen and Hydrogen",
+		"Token",
+		"Kat's Stock Music Tape",
+		"Digital Clock",
+		"Unsticky Goo (Small Doors)",
+		"Anti Magician Scissors",
+		"Janitor Boots"
 	};
 
 	// Token: 0x0400061F RID: 1567
@@ -716,6 +815,10 @@ public class GameControllerScript : MonoBehaviour
 
 	// Token: 0x04000621 RID: 1569
 	public Texture[] itemTextures = new Texture[10];
+
+	public Texture[] petTextures = new Texture[3];
+
+	public GameObject[] notebooksToHide = new GameObject[6];
 
 	// Token: 0x04000622 RID: 1570
 	public GameObject bsodaSpray;
@@ -738,8 +841,16 @@ public class GameControllerScript : MonoBehaviour
 	// Token: 0x04000628 RID: 1576
 	public GameObject reticle;
 
+	public GameObject learnGame;
+
+	public GameObject katTeleport;
+
+	public GameObject playerTeleport;
+
 	// Token: 0x04000629 RID: 1577
 	public RectTransform itemSelect;
+
+	public SchoolExploreScript exploreScript;
 
 	// Token: 0x0400062A RID: 1578
 	private int[] itemSelectOffset;

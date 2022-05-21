@@ -11,6 +11,7 @@ public class BaldiScript : MonoBehaviour
 		this.baldiAudio = base.GetComponent<AudioSource>();
 		this.agent = base.GetComponent<NavMeshAgent>();
 		this.timeToMove = this.baseTime;
+		this.hasMovedOnce = false;
 		this.Wander();
 		if (PlayerPrefs.GetInt("Rumble") == 1)
 		{
@@ -25,13 +26,18 @@ public class BaldiScript : MonoBehaviour
 		{
 			this.timeToMove -= 1f * Time.deltaTime;
 		}
-		else
+		else if(this.timeToMove <= 0f && finalMode == false)
 		{
 			this.Move();
+			this.MoveAgain();
 		}
 		if (this.coolDown > 0f)
 		{
 			this.coolDown -= 1f * Time.deltaTime;
+		}
+		if	(this.secCoolDown > 0f)
+		{
+			this.secCoolDown -= 1f * Time.deltaTime;
 		}
 		if (this.baldiTempAnger > 0f)
 		{
@@ -94,7 +100,16 @@ public class BaldiScript : MonoBehaviour
 	{
 		this.wanderer.GetNewTarget();
 		this.agent.SetDestination(this.wanderTarget.position);
-		this.coolDown = 1f;
+		if(hasMovedOnce)
+		{
+			this.coolDown = 0.2f;
+			this.secCoolDown = 0.5f;
+		}
+		else
+		{
+			this.coolDown = 0.5f;
+			this.secCoolDown = 0.2f;
+		}
 		this.currentPriority = 0f;
 	}
 
@@ -102,7 +117,16 @@ public class BaldiScript : MonoBehaviour
 	public void TargetPlayer()
 	{
 		this.agent.SetDestination(this.player.position);
-		this.coolDown = 1f;
+		if(hasMovedOnce)
+		{
+			this.coolDown = 0.2f;
+			this.secCoolDown = 0.5f;
+		}
+		else
+		{
+			this.coolDown = 0.5f;
+			this.secCoolDown = 0.2f;
+		}
 		this.currentPriority = 0f;
 	}
 
@@ -113,9 +137,34 @@ public class BaldiScript : MonoBehaviour
 		{
 			this.Wander();
 		}
-		this.moveFrames = 10f;
+		this.hasMovedOnce = true;
+		this.moveFrames = 5f;
 		this.timeToMove = this.baldiWait - this.baldiTempAnger;
 		this.previous = base.transform.position;
+		this.baldiAudio.pitch = 1f;
+		this.baldiAudio.PlayOneShot(this.slap);
+		this.baldiAnimator.SetTrigger("slap");
+		if (this.rumble)
+		{
+			float num = Vector3.Distance(base.transform.position, this.player.position);
+			if (num < this.vibrationDistance)
+			{
+				float motorLevel = 1f - num / this.vibrationDistance;
+			}
+		}
+	}
+
+	private void MoveAgain()
+	{
+		if (base.transform.position == this.previous & this.secCoolDown < 0f)
+		{
+			this.Wander();
+		}
+		this.hasMovedOnce = false;
+		this.moveFrames = 5f;
+		this.timeToMove = this.baldiWait - this.baldiTempAnger;
+		this.previous = base.transform.position;
+		this.baldiAudio.pitch = UnityEngine.Random.Range(0.8f, 1.1f);
 		this.baldiAudio.PlayOneShot(this.slap);
 		this.baldiAnimator.SetTrigger("slap");
 		if (this.rumble)
@@ -136,7 +185,7 @@ public class BaldiScript : MonoBehaviour
 		{
 			this.baldiAnger = 0.5f;
 		}
-		this.baldiWait = -3f * this.baldiAnger / (this.baldiAnger + 2f / this.baldiSpeedScale) + 3f;
+		this.baldiWait = -3f * this.baldiAnger / (this.baldiAnger + 1f / this.baldiSpeedScale) + 3f;
 	}
 
 	// Token: 0x060009AA RID: 2474 RVA: 0x00024992 File Offset: 0x00022D92
@@ -193,6 +242,8 @@ public class BaldiScript : MonoBehaviour
 	// Token: 0x04000688 RID: 1672
 	private float currentPriority;
 
+	private bool hasMovedOnce;
+
 	// Token: 0x04000689 RID: 1673
 	public bool antiHearing;
 
@@ -217,6 +268,8 @@ public class BaldiScript : MonoBehaviour
 	// Token: 0x04000690 RID: 1680
 	public bool endless;
 
+	public bool finalMode;
+
 	// Token: 0x04000691 RID: 1681
 	public Transform player;
 
@@ -240,6 +293,8 @@ public class BaldiScript : MonoBehaviour
 
 	// Token: 0x04000698 RID: 1688
 	public float coolDown;
+
+	public float secCoolDown;
 
 	// Token: 0x04000699 RID: 1689
 	private Vector3 previous;

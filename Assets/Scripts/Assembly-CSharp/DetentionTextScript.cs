@@ -17,7 +17,7 @@ public class DetentionTextScript : MonoBehaviour
 	{
 		if (this.door.lockTime > 0f)
 		{
-			this.text.text = "You have detention! \n" + Mathf.CeilToInt(this.door.lockTime) + " seconds remain!";
+			this.text.text = "Appleseed's Detention! \n" + Mathf.CeilToInt(this.door.lockTime) + " seconds remain!";
 		}
 		else
 		{

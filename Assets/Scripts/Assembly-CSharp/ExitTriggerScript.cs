@@ -8,16 +8,26 @@ public class ExitTriggerScript : MonoBehaviour
 	// Token: 0x06000962 RID: 2402 RVA: 0x000219A0 File Offset: 0x0001FDA0
 	private void OnTriggerEnter(Collider other)
 	{
-		if (this.gc.notebooks >= 7 & other.tag == "Player")
+		if (this.gc.notebooks >= 8 & other.tag == "Player")
 		{
-			if (this.gc.failedNotebooks >= 7)
-			{
-				SceneManager.LoadScene("Secret");
+			if(this.gc.pet != 0){
+				switch (this.gc.pet)
+				{
+					case 1:
+						PlayerPrefs.SetInt("PetRock", 1);
+						break;
+					case 2:
+						PlayerPrefs.SetInt("PetGrass", 1);
+						break;
+					case 3:
+						PlayerPrefs.SetInt("PetHairball", 1);
+						break;
+					default:
+						break;
+				}
 			}
-			else
-			{
-				SceneManager.LoadScene("Results");
-			}
+			SceneManager.LoadScene("Results");
+			//you will always get the win screen
 		}
 	}
 

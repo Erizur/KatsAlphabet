@@ -17,35 +17,35 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  -
+  - Minimap
   - Water
   - UI
-  -
-  -
-  - Non-Player
-  - Player
-  - Trigger
-  - PlayerTrigger
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
+  - Character
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   m_SortingLayers:
   - name: Default
     uniqueID: 0
