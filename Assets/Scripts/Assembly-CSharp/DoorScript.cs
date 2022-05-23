@@ -150,6 +150,8 @@ public class DoorScript : MonoBehaviour
 	// Token: 0x040005D0 RID: 1488
 	private bool bDoorLocked;
 
+	public bool katClass;
+
 	// Token: 0x040005D1 RID: 1489
 	public int silentOpens;
 

@@ -29,7 +29,6 @@ public class BaldiScript : MonoBehaviour
 		else if(this.timeToMove <= 0f && finalMode == false)
 		{
 			this.Move();
-			this.MoveAgain();
 		}
 		if (this.coolDown > 0f)
 		{
@@ -138,7 +137,7 @@ public class BaldiScript : MonoBehaviour
 			this.Wander();
 		}
 		this.hasMovedOnce = true;
-		this.moveFrames = 5f;
+		this.moveFrames = 6f;
 		this.timeToMove = this.baldiWait - this.baldiTempAnger;
 		this.previous = base.transform.position;
 		this.baldiAudio.pitch = 1f;

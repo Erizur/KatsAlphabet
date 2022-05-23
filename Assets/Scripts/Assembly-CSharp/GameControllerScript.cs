@@ -31,6 +31,8 @@ public class GameControllerScript : MonoBehaviour
 		this.UpdateNotebookCount();
 		this.hideNotebooks(true);
 		this.LoadPets();
+		this.EnableSecretRoom();
+		this.manualScript.SetActive(false);
 		this.itemSelected = 0;
 		this.gameOverDelay = 0.5f;
 	}
@@ -253,6 +255,7 @@ public class GameControllerScript : MonoBehaviour
 	{
 		this.baldiScrpt.finalMode = true;
 		this.finaleMode = true;
+		this.manualScript.SetActive(true);
 		this.entrance_0.Raise();
 		this.entrance_1.Raise();
 		this.entrance_2.Raise();
@@ -270,7 +273,14 @@ public class GameControllerScript : MonoBehaviour
 		this.player.transform.position = this.playerTeleport.transform.position;
 		this.audioDevice.PlayOneShot(this.aud_bellRing);
 		this.audioDevice.PlayOneShot(this.aud_ClassAgain);
+		StartCoroutine(this.waitUntilDisapppear());
 		this.classTime = false;
+	}
+
+	IEnumerator waitUntilDisapppear()
+	{
+		yield return new WaitForSeconds(6.0f);
+		this.lostGame.SetActive(true);
 	}
 
 	// Token: 0x0600096F RID: 2415 RVA: 0x000221F4 File Offset: 0x000205F4
@@ -407,6 +417,15 @@ public class GameControllerScript : MonoBehaviour
 		if(pet1 == 1 && pet2 == 1 && pet3 == 1)
 		{
 			allPets = true;
+		}
+	}
+
+	public void EnableSecretRoom()
+	{
+		if(allPets == true)
+		{
+			this.secretRoomWall.SetActive(true);
+			this.secretRoomWallDisabled.SetActive(false);
 		}
 	}
 
@@ -737,6 +756,8 @@ public class GameControllerScript : MonoBehaviour
 	// Token: 0x0400060D RID: 1549
 	public GameObject firstPrize;
 
+	public GameObject lostGame;
+
 	// Token: 0x0400060E RID: 1550
 	public FirstPrizeScript firstPrizeScript;
 
@@ -774,6 +795,8 @@ public class GameControllerScript : MonoBehaviour
 	public bool mouseLocked;
 
 	public bool classTime;
+
+	public bool didWarning = false;
 
 	// Token: 0x0400061A RID: 1562
 	public int exitsReached;
@@ -826,6 +849,8 @@ public class GameControllerScript : MonoBehaviour
 	// Token: 0x04000623 RID: 1571
 	public GameObject alarmClock;
 
+	public GameObject manualScript;
+
 	// Token: 0x04000624 RID: 1572
 	public TMP_Text notebookCount;
 
@@ -846,6 +871,10 @@ public class GameControllerScript : MonoBehaviour
 	public GameObject katTeleport;
 
 	public GameObject playerTeleport;
+
+	public GameObject secretRoomWall;
+
+	public GameObject secretRoomWallDisabled;
 
 	// Token: 0x04000629 RID: 1577
 	public RectTransform itemSelect;

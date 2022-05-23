@@ -29,6 +29,8 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
@@ -330,7 +332,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!124 &16
 Behaviour:
@@ -343,7 +345,7 @@ Behaviour:
 --- !u!157 &17
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -398,7 +400,8 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 5be3b4b674aeafb46bd8d672aaf2edb3,
+    type: 2}
 --- !u!222 &18
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -510,6 +513,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -612,10 +616,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   images:
   - {fileID: 21300000, guid: 8814f7b9046525f4689a14b1e2354688, type: 3}
-  - {fileID: 21300000, guid: 485394be998e8e94b814f29f93e214f7, type: 3}
-  - {fileID: 21300000, guid: 326684367f1546a4bbc047fd0df5b11d, type: 3}
-  - {fileID: 21300000, guid: dcbdbf446e7190649b952da13cc16518, type: 3}
-  - {fileID: 21300000, guid: ab3ba141f4b464249bf924707921f1b7, type: 3}
   rare: {fileID: 21300000, guid: 1c4a613b94c86a3489f9db9a87167e01, type: 3}
 --- !u!114 &28
 MonoBehaviour:
@@ -632,6 +632,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -704,6 +705,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &33
 MonoBehaviour:
   m_ObjectHideFlags: 0

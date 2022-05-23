@@ -58,19 +58,14 @@ public class MathGameScript : MonoBehaviour
                 if(this.gc.notebooks < 2)
                 {
                     GC.Collect();
-                    if(this.problemsWrong >= 3 && this.gc.notebooks == 2){
-                        this.gc.RestartLearningGame(base.gameObject);
-                    }
-                    else{
-                        this.gc.CollectNotebook();
-                        this.gc.RestartLearningGame(base.gameObject);
-                    }
+                    this.gc.CollectNotebook();
+                    this.gc.RestartLearningGame(base.gameObject);
 
                 }
                 else
                 {
                     GC.Collect();
-                    if(this.problemsWrong >= 3){
+                    if(this.problemsWrong >= 3 && this.gc.notebooks == 2){
                         this.gc.RestartLearningGame(base.gameObject);
                     }
                     else{
@@ -230,7 +225,7 @@ public class MathGameScript : MonoBehaviour
             }
             else if (this.gc.mode == "story" & this.problemsWrong >= 4)
             {
-                this.questionText.text = "You have answered \neverything incorrectly.";
+                this.questionText.text = "You have failed!\n";
                 this.questionText2.text = string.Empty;
                 this.questionText3.text = string.Empty;
                 this.questionText4.text = string.Empty;
@@ -245,7 +240,7 @@ public class MathGameScript : MonoBehaviour
                 this.questionText3.text = string.Empty;
                 this.questionText4.text = string.Empty;
             }
-            if(!this.gc.spoopMode && this.gc.notebooks < 2 && this.problemsWrong <= 2)
+            if(!this.gc.spoopMode && this.gc.notebooks < 2)
             {
                 this.questionText.text = this.questionText.text + "\nMore questions coming...";
             }

@@ -15,8 +15,7 @@ public class GameOverScript : MonoBehaviour
 		this.chance = UnityEngine.Random.Range(1f, 99f);
 		if (this.chance < 98f)
 		{
-			int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 4f));
-			this.image.sprite = this.images[num];
+			this.image.sprite = this.images[0];
 		}
 		else
 		{
@@ -57,7 +56,7 @@ public class GameOverScript : MonoBehaviour
 	private float delay;
 
 	// Token: 0x0400063D RID: 1597
-	public Sprite[] images = new Sprite[5];
+	public Sprite[] images = new Sprite[1];
 
 	// Token: 0x0400063E RID: 1598
 	public Sprite rare;
