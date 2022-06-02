@@ -19,11 +19,7 @@ public class MathGameScript : MonoBehaviour
     private void Start()
     {
         this.gc.ActivateLearningGame();
-        if (this.gc.notebooks == 1)
-        {
-            this.QueueAudio(this.bal_intro);
-        }
-        this.NewProblem();
+        this.ChooseGame();
         if (this.gc.spoopMode)
         {
             this.baldiFeedTransform.position = new Vector3(-1000f, -1000f, 0f);
@@ -55,7 +51,7 @@ public class MathGameScript : MonoBehaviour
             this.endDelay -= 1f * Time.unscaledDeltaTime;
             if (this.endDelay <= 0f)
             {
-                if(this.gc.notebooks < 2)
+                if (this.gc.notebooks < 2)
                 {
                     GC.Collect();
                     this.gc.CollectNotebook();
@@ -65,10 +61,12 @@ public class MathGameScript : MonoBehaviour
                 else
                 {
                     GC.Collect();
-                    if(this.problemsWrong >= 3 && this.gc.notebooks == 2){
+                    if (this.problemsWrong >= 3 && this.gc.notebooks == 2)
+                    {
                         this.gc.RestartLearningGame(base.gameObject);
                     }
-                    else{
+                    else
+                    {
                         this.ExitGame();
                     }
                 }
@@ -76,8 +74,185 @@ public class MathGameScript : MonoBehaviour
         }
     }
 
+    private void ChooseGame()
+    {
+        this.gameCanvas.SetActive(false);
+        this.pickCanvas.SetActive(true);
+
+        int rnd1 = UnityEngine.Random.Range(0, 11);
+        int rnd2 = UnityEngine.Random.Range(0, 11);
+
+        int ran1 = 0;
+        int ran2 = 0;
+        do
+        {
+            rnd1 = UnityEngine.Random.Range(0, 11);
+            rnd2 = UnityEngine.Random.Range(0, 11);
+
+            switch (rnd1)
+            {
+                case 0:
+                case 5:
+                case 11:
+                case 6:
+                    ran1 = 0;
+                    break;
+                case 1:
+                case 2:
+                case 7:
+                case 9:
+                    ran1 = 1;
+                    break;
+                case 3:
+                case 4:
+                case 10:
+                case 8:
+                    ran1 = 2;
+                    break;
+                default:
+                    ran1 = 0;
+                    break;
+            }
+
+            switch (rnd2)
+            {
+                case 0:
+                case 5:
+                case 11:
+                case 6:
+                    ran1 = 0;
+                    break;
+                case 1:
+                case 2:
+                case 7:
+                case 9:
+                    ran1 = 1;
+                    break;
+                case 3:
+                case 4:
+                case 10:
+                case 8:
+                    ran1 = 2;
+                    break;
+                default:
+                    ran1 = 0;
+                    break;
+            }
+        } while (rnd1 == rnd2 || ran1 == ran2);
+
+        Debug.Log("ran1: " + ran1 + " ran2: " + ran2);
+
+        theTwoGames[0].texture = gameChoose[ran1];
+        theTwoGames[1].texture = gameChoose[ran2];
+
+        switch (ran1)
+        {
+            case 0:
+                whatGame = "Alphabet";
+                break;
+            case 1:
+                whatGame = "Guess";
+                break;
+            case 2:
+                whatGame = "WhatGoes";
+                break;
+            default:
+                whatGame = "Alphabet";
+                break;
+        }
+
+        Debug.Log("What game is it? " + whatGame);
+
+        switch (ran2)
+        {
+            case 0:
+                whatGame2 = "Alphabet";
+                break;
+            case 1:
+                whatGame2 = "Guess";
+                break;
+            case 2:
+                whatGame2 = "WhatGoes";
+                break;
+            default:
+                whatGame2 = "Alphabet";
+                break;
+        }
+
+        Debug.Log("What game is it? Part 2 = " + whatGame2);
+    }
+
+    public void OnClickOne()
+    {
+        this.gameCanvas.SetActive(true);
+        this.pickCanvas.SetActive(false);
+
+        if (this.gc.notebooks == 1)
+        {
+            this.QueueAudio(this.bal_intro);
+        }
+
+        switch (whatGame)
+        {
+            case "Alphabet":
+                this.curGame = "Alphabet";
+                this.NewAlphabetProblem();
+                break;
+            case "Guess":
+                this.curGame = "Guess";
+                this.NewGuessProblem();
+                break;
+            case "WhatGoes":
+                this.curGame = "WhatGoes";
+                this.NewWhatGoesProblem();
+                break;
+            default:
+                this.curGame = "Alphabet";
+                this.NewAlphabetProblem();
+                break;
+        }
+
+        //make itemToGuess transparent if its not the Guess game
+        if (this.curGame != "Guess")
+        {
+            this.itemToGuess.color = new Color(1f, 1f, 1f, 1f);
+        }
+
+    }
+
+    public void OnClickTwo()
+    {
+        this.gameCanvas.SetActive(true);
+        this.pickCanvas.SetActive(false);
+
+        if (this.gc.notebooks == 1)
+        {
+            this.QueueAudio(this.bal_intro);
+        }
+
+        switch (whatGame2)
+        {
+            case "Alphabet":
+                this.curGame = "Alphabet";
+                this.NewAlphabetProblem();
+                break;
+            case "Guess":
+                this.curGame = "Guess";
+                this.NewGuessProblem();
+                break;
+            case "WhatGoes":
+                this.curGame = "WhatGoes";
+                this.NewWhatGoesProblem();
+                break;
+            default:
+                this.curGame = "Alphabet";
+                this.NewAlphabetProblem();
+                break;
+        }
+    }
+
     // Token: 0x06000984 RID: 2436 RVA: 0x00023350 File Offset: 0x00021750
-    private void NewProblem()
+    public void NewGuessProblem()
     {
         this.playerAnswer.text = string.Empty;
         this.problem++;
@@ -87,8 +262,207 @@ public class MathGameScript : MonoBehaviour
             this.QueueAudio(this.bal_problems[this.problem - 1]);
             if ((this.gc.mode == "story" & (this.problem <= 3 || this.gc.notebooks <= 2)) || (this.gc.mode == "endless" & (this.problem <= 3 || this.gc.notebooks != 2)))
             {
+                this.num1 = (float)Mathf.RoundToInt(UnityEngine.Random.Range(1f, 4f));
+                this.sign = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
+                if (this.sign == 0)
+                {
+                    switch (this.num1)
+                    {
+                        case 1:
+                            this.solution = "Triangle";
+                            break;
+                        case 2:
+                            this.solution = "Circle";
+                            break;
+                        case 3:
+                            this.solution = "Square";
+                            break;
+                        case 4:
+                            this.solution = "Apple";
+                            break;
+                        default:
+                            this.solution = "Triangle";
+                            break;
+                    }
+                    this.itemToGuess.texture = this.gameImages[Mathf.RoundToInt(this.num1 - 1f)];
+                    this.questionText.text = string.Concat(new object[]
+                    {
+                        "Name the shape/fruit!"
+                    });
+                }
+                else if (this.sign == 1)
+                {
+                    switch (this.num1)
+                    {
+                        case 1:
+                            this.solution = "Triangle";
+                            break;
+                        case 2:
+                            this.solution = "Circle";
+                            break;
+                        case 3:
+                            this.solution = "Square";
+                            break;
+                        case 4:
+                            this.solution = "Apple";
+                            break;
+                        default:
+                            this.solution = "Triangle";
+                            break;
+                    }
+                    this.itemToGuess.texture = this.gameImages[Mathf.RoundToInt(this.num1 - 1f)];
+                    this.questionText.text = string.Concat(new object[]
+                    {
+                        "Name the shape/fruit!"
+                    });
+                }
+            }
+            else
+            {
+                this.impossibleMode = true;
+                this.itemToGuess.gameObject.SetActive(false);
+                this.num1 = UnityEngine.Random.Range(1f, 9999f);
+                this.num2 = UnityEngine.Random.Range(1f, 9999f);
+                this.num3 = UnityEngine.Random.Range(1f, 9999f);
+                this.sign = Mathf.RoundToInt((float)UnityEngine.Random.Range(0, 1));
+                this.QueueAudio(this.bal_screech);
+                if (this.sign == 0)
+                {
+                    this.questionText.text = string.Concat(new object[]
+                    {
+                        "EXCEPTION OCCURRED, ERROR CODE: \n",
+                        this.num1,
+                        this.num2,
+                        this.num3
+                    });
+                }
+                else if (this.sign == 1)
+                {
+                    this.questionText.text = string.Concat(new object[]
+                    {
+                        "INTERNAL SYSTEM ERROR, ERROR CODE: \n",
+                        this.num1,
+                        this.num2,
+                        this.num3
+                    });
+                }
+                this.num1 = UnityEngine.Random.Range(1f, 9999f);
+                this.num2 = UnityEngine.Random.Range(1f, 9999f);
+                this.num3 = UnityEngine.Random.Range(1f, 9999f);
+                this.sign = Mathf.RoundToInt((float)UnityEngine.Random.Range(0, 1));
+                if (this.sign == 0)
+                {
+                    this.questionText2.text = string.Concat(new object[]
+                    {
+                        "EXCEPTION OCCURRED, ERROR CODE: \n",
+                        this.num1,
+                        this.num2,
+                        this.num3
+                    });
+                }
+                else if (this.sign == 1)
+                {
+                    this.questionText2.text = string.Concat(new object[]
+                    {
+                        "INTERNAL SYSTEM ERROR, ERROR CODE: \n",
+                        this.num1,
+                        this.num2,
+                        this.num3
+                    });
+                }
+                this.num1 = UnityEngine.Random.Range(1f, 9999f);
+                this.num2 = UnityEngine.Random.Range(1f, 9999f);
+                this.num3 = UnityEngine.Random.Range(1f, 9999f);
+                this.sign = Mathf.RoundToInt((float)UnityEngine.Random.Range(0, 1));
+                if (this.sign == 0)
+                {
+                    this.questionText3.text = string.Concat(new object[]
+                    {
+                        "EXCEPTION OCCURRED, ERROR CODE: \n",
+                        this.num1,
+                        this.num2,
+                        this.num3
+                    });
+                }
+                else if (this.sign == 1)
+                {
+                    this.questionText3.text = string.Concat(new object[]
+                    {
+                        "INTERNAL SYSTEM ERROR, ERROR CODE: \n",
+                        this.num1,
+                        this.num2,
+                        this.num3
+                    });
+                }
+            }
+            this.questionInProgress = true;
+        }
+        else
+        {
+            this.endDelay = 5f;
+            this.itemToGuess.gameObject.SetActive(false);
+            if (!this.gc.spoopMode && this.gc.notebooks < 2 && this.problemsWrong <= 1)
+            {
+                this.questionText.text = "Great Job!";
+            }
+            else if (!this.gc.spoopMode && this.gc.notebooks < 2 && this.problemsWrong <= 2)
+            {
+                this.questionText.text = "It's okay, you can do better!";
+            }
+            else if (!this.gc.spoopMode && this.gc.notebooks >= 2 && this.problemsWrong < 3)
+            {
+                this.questionText.text = "You finished the game!";
+            }
+            else if (this.gc.mode == "endless" & this.problemsWrong <= 0)
+            {
+                int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
+                this.questionText.text = this.endlessHintText[num];
+            }
+            else if (this.gc.mode == "story" & this.problemsWrong >= 4)
+            {
+                this.questionText.text = "You have failed!\n";
+                this.questionText2.text = string.Empty;
+                this.questionText3.text = string.Empty;
+                this.questionText4.text = string.Empty;
+                if (this.baldiScript.isActiveAndEnabled) this.baldiScript.Hear(this.playerPosition, 7f);
+                this.gc.failedNotebooks++;
+            }
+            else
+            {
+                int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
+                this.questionText.text = this.hintText[num2];
+                this.questionText2.text = string.Empty;
+                this.questionText3.text = string.Empty;
+                this.questionText4.text = string.Empty;
+            }
+            if (!this.gc.spoopMode && this.gc.notebooks < 2)
+            {
+                this.questionText.text = this.questionText.text + "\nMore questions coming...";
+            }
+            else if (!this.gc.spoopMode && this.gc.notebooks == 2 && this.problemsWrong >= 3)
+            {
+                this.questionText.text = this.questionText.text + "\nRestarting game...";
+            }
+        }
+    }
+
+    public void NewAlphabetProblem()
+    {
+        this.playerAnswer.text = string.Empty;
+        this.problem++;
+        this.playerAnswer.ActivateInputField();
+        if (this.curGame != "Guess")
+        {
+            this.itemToGuess.gameObject.SetActive(false);
+        }
+        if (this.problem <= 4)
+        {
+            this.QueueAudio(this.bal_problems[this.problem - 1]);
+            if ((this.gc.mode == "story" & (this.problem <= 3 || this.gc.notebooks <= 2)) || (this.gc.mode == "endless" & (this.problem <= 3 || this.gc.notebooks != 2)))
+            {
                 this.num1 = (float)Mathf.RoundToInt(UnityEngine.Random.Range(1f, 26f));
-                switch(this.num1){
+                switch (this.num1)
+                {
                     case 1:
                         this.thType = "st";
                         break;
@@ -210,11 +584,11 @@ public class MathGameScript : MonoBehaviour
             {
                 this.questionText.text = "Great Job!";
             }
-            else if(!this.gc.spoopMode && this.gc.notebooks < 2 && this.problemsWrong <= 2)
+            else if (!this.gc.spoopMode && this.gc.notebooks < 2 && this.problemsWrong <= 2)
             {
                 this.questionText.text = "It's okay, you can do better!";
             }
-            else if(!this.gc.spoopMode && this.gc.notebooks >= 2 && this.problemsWrong < 3)
+            else if (!this.gc.spoopMode && this.gc.notebooks >= 2 && this.problemsWrong < 3)
             {
                 this.questionText.text = "You finished the game!";
             }
@@ -240,11 +614,176 @@ public class MathGameScript : MonoBehaviour
                 this.questionText3.text = string.Empty;
                 this.questionText4.text = string.Empty;
             }
-            if(!this.gc.spoopMode && this.gc.notebooks < 2)
+            if (!this.gc.spoopMode && this.gc.notebooks < 2)
             {
                 this.questionText.text = this.questionText.text + "\nMore questions coming...";
             }
-            else if(!this.gc.spoopMode && this.gc.notebooks == 2 && this.problemsWrong >= 3)
+            else if (!this.gc.spoopMode && this.gc.notebooks == 2 && this.problemsWrong >= 3)
+            {
+                this.questionText.text = this.questionText.text + "\nRestarting game...";
+            }
+        }
+    }
+
+    public void NewWhatGoesProblem()
+    {
+        this.playerAnswer.text = string.Empty;
+        this.problem++;
+        this.playerAnswer.ActivateInputField();
+        if (this.curGame != "Guess")
+        {
+            this.itemToGuess.gameObject.SetActive(false);
+        }
+        if (this.problem <= 4)
+        {
+            this.QueueAudio(this.bal_problems[this.problem - 1]);
+            if ((this.gc.mode == "story" & (this.problem <= 3 || this.gc.notebooks <= 2)) || (this.gc.mode == "endless" & (this.problem <= 3 || this.gc.notebooks != 2)))
+            {
+                this.num1 = (float)Mathf.RoundToInt(UnityEngine.Random.Range(2f, 25f));
+                this.sign = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
+
+                string bef = Number2String(Mathf.RoundToInt(this.num1 - 1f), true);
+                string aft = Number2String(Mathf.RoundToInt(this.num1 + 1f), true);
+                if (this.sign == 0)
+                {
+                    this.solution = Number2String(Mathf.RoundToInt(this.num1), true);
+                    this.questionText.text = string.Concat(new object[]
+                    {
+                        "What goes in the middle?\n",
+                        bef + " _ " + aft
+                    });
+                }
+                else if (this.sign == 1)
+                {
+                    this.solution = Number2String(Mathf.RoundToInt(this.num1), true);
+                    this.questionText.text = string.Concat(new object[]
+                    {
+                        "What goes in the middle?\n",
+                        bef + " _ " + aft
+                    });
+                }
+            }
+            else
+            {
+                this.impossibleMode = true;
+                this.num1 = UnityEngine.Random.Range(1f, 9999f);
+                this.num2 = UnityEngine.Random.Range(1f, 9999f);
+                this.num3 = UnityEngine.Random.Range(1f, 9999f);
+                this.sign = Mathf.RoundToInt((float)UnityEngine.Random.Range(0, 1));
+                this.QueueAudio(this.bal_screech);
+                if (this.sign == 0)
+                {
+                    this.questionText.text = string.Concat(new object[]
+                    {
+                        "EXCEPTION OCCURRED, ERROR CODE: \n",
+                        this.num1,
+                        this.num2,
+                        this.num3
+                    });
+                }
+                else if (this.sign == 1)
+                {
+                    this.questionText.text = string.Concat(new object[]
+                    {
+                        "INTERNAL SYSTEM ERROR, ERROR CODE: \n",
+                        this.num1,
+                        this.num2,
+                        this.num3
+                    });
+                }
+                this.num1 = UnityEngine.Random.Range(1f, 9999f);
+                this.num2 = UnityEngine.Random.Range(1f, 9999f);
+                this.num3 = UnityEngine.Random.Range(1f, 9999f);
+                this.sign = Mathf.RoundToInt((float)UnityEngine.Random.Range(0, 1));
+                if (this.sign == 0)
+                {
+                    this.questionText2.text = string.Concat(new object[]
+                    {
+                        "EXCEPTION OCCURRED, ERROR CODE: \n",
+                        this.num1,
+                        this.num2,
+                        this.num3
+                    });
+                }
+                else if (this.sign == 1)
+                {
+                    this.questionText2.text = string.Concat(new object[]
+                    {
+                        "INTERNAL SYSTEM ERROR, ERROR CODE: \n",
+                        this.num1,
+                        this.num2,
+                        this.num3
+                    });
+                }
+                this.num1 = UnityEngine.Random.Range(1f, 9999f);
+                this.num2 = UnityEngine.Random.Range(1f, 9999f);
+                this.num3 = UnityEngine.Random.Range(1f, 9999f);
+                this.sign = Mathf.RoundToInt((float)UnityEngine.Random.Range(0, 1));
+                if (this.sign == 0)
+                {
+                    this.questionText3.text = string.Concat(new object[]
+                    {
+                        "EXCEPTION OCCURRED, ERROR CODE: \n",
+                        this.num1,
+                        this.num2,
+                        this.num3
+                    });
+                }
+                else if (this.sign == 1)
+                {
+                    this.questionText3.text = string.Concat(new object[]
+                    {
+                        "INTERNAL SYSTEM ERROR, ERROR CODE: \n",
+                        this.num1,
+                        this.num2,
+                        this.num3
+                    });
+                }
+            }
+            this.questionInProgress = true;
+        }
+        else
+        {
+            this.endDelay = 5f;
+            if (!this.gc.spoopMode && this.gc.notebooks < 2 && this.problemsWrong <= 1)
+            {
+                this.questionText.text = "Great Job!";
+            }
+            else if (!this.gc.spoopMode && this.gc.notebooks < 2 && this.problemsWrong <= 2)
+            {
+                this.questionText.text = "It's okay, you can do better!";
+            }
+            else if (!this.gc.spoopMode && this.gc.notebooks >= 2 && this.problemsWrong < 3)
+            {
+                this.questionText.text = "You finished the game!";
+            }
+            else if (this.gc.mode == "endless" & this.problemsWrong <= 0)
+            {
+                int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
+                this.questionText.text = this.endlessHintText[num];
+            }
+            else if (this.gc.mode == "story" & this.problemsWrong >= 4)
+            {
+                this.questionText.text = "You have failed!\n";
+                this.questionText2.text = string.Empty;
+                this.questionText3.text = string.Empty;
+                this.questionText4.text = string.Empty;
+                if (this.baldiScript.isActiveAndEnabled) this.baldiScript.Hear(this.playerPosition, 7f);
+                this.gc.failedNotebooks++;
+            }
+            else
+            {
+                int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
+                this.questionText.text = this.hintText[num2];
+                this.questionText2.text = string.Empty;
+                this.questionText3.text = string.Empty;
+                this.questionText4.text = string.Empty;
+            }
+            if (!this.gc.spoopMode && this.gc.notebooks < 2)
+            {
+                this.questionText.text = this.questionText.text + "\nMore questions coming...";
+            }
+            else if (!this.gc.spoopMode && this.gc.notebooks == 2 && this.problemsWrong >= 3)
             {
                 this.questionText.text = this.questionText.text + "\nRestarting game...";
             }
@@ -260,14 +799,14 @@ public class MathGameScript : MonoBehaviour
     // Token: 0x06000986 RID: 2438 RVA: 0x00023BC0 File Offset: 0x00021FC0
     public void CheckAnswer()
     {
-        if (this.playerAnswer.text == "31718")
+        if (this.playerAnswer.text == "katsweirdness")
         {
-            base.StartCoroutine(this.CheatText("THIS IS WHERE IT ALL BEGAN"));
+            base.StartCoroutine(this.CheatText("KAT PROTOTYPE. \n2019 AMERIZUR"));
             SceneManager.LoadSceneAsync("TestRoom");
         }
-        else if (this.playerAnswer.text == "53045009")
+        else if (this.playerAnswer.text == "iamflippingout")
         {
-            base.StartCoroutine(this.CheatText("USE THESE TO STICK TO THE CEILING!"));
+            base.StartCoroutine(this.CheatText("Time to flip out!"));
             this.gc.Fliparoo();
         }
         if (this.problem <= 4)
@@ -279,7 +818,21 @@ public class MathGameScript : MonoBehaviour
                 this.ClearAudioQueue();
                 int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 3f));
                 this.QueueAudio(this.bal_praises[num]);
-                this.NewProblem();
+                switch (curGame)
+                {
+                    case "Alphabet":
+                        this.NewAlphabetProblem();
+                        break;
+                    case "Guess":
+                        this.NewGuessProblem();
+                        break;
+                    case "WhatGoes":
+                        this.NewWhatGoesProblem();
+                        break;
+                    default:
+                        this.NewAlphabetProblem();
+                        break;
+                }
             }
             else
             {
@@ -289,16 +842,19 @@ public class MathGameScript : MonoBehaviour
                 this.ClearAudioQueue();
                 if (!this.gc.spoopMode)
                 {
-                    if(this.problemsWrong >= 4 && this.gc.notebooks == 2){
+                    if (this.problemsWrong >= 4 && this.gc.notebooks == 2)
+                    {
                         this.QueueAudio(this.bal_allwrong);
                     }
-                    else{
+                    else
+                    {
                         this.QueueAudio(this.bal_wrong);
                     }
                     //this.baldiFeed.SetTrigger("angry");
                     //this.gc.ActivateSpoopMode();
                 }
-                else{
+                else
+                {
                     if (this.gc.mode == "story")
                     {
                         if (this.problem == 4)
@@ -315,7 +871,21 @@ public class MathGameScript : MonoBehaviour
                         this.baldiScript.GetAngry(1f);
                     }
                 }
-                this.NewProblem();
+                switch (curGame)
+                {
+                    case "Alphabet":
+                        this.NewAlphabetProblem();
+                        break;
+                    case "Guess":
+                        this.NewGuessProblem();
+                        break;
+                    case "WhatGoes":
+                        this.NewWhatGoesProblem();
+                        break;
+                    default:
+                        this.NewAlphabetProblem();
+                        break;
+                }
             }
         }
     }
@@ -403,8 +973,20 @@ public class MathGameScript : MonoBehaviour
     // Token: 0x04000644 RID: 1604
     public GameObject mathGame;
 
+    public GameObject gameCanvas;
+
+    public GameObject pickCanvas;
+
+    public RawImage itemToGuess;
+
+    public RawImage[] theTwoGames = new RawImage[2];
+
     // Token: 0x04000645 RID: 1605
     public RawImage[] results = new RawImage[4];
+
+    public Texture[] gameImages = new Texture[4];
+
+    public Texture[] gameChoose = new Texture[3];
 
     // Token: 0x04000646 RID: 1606
     public Texture correct;
@@ -468,6 +1050,12 @@ public class MathGameScript : MonoBehaviour
 
     private string thType;
 
+    private string whatGame;
+
+    private string whatGame2;
+
+    private string curGame;
+
     // Token: 0x04000660 RID: 1632
     private int sign;
 
@@ -505,4 +1093,4 @@ public class MathGameScript : MonoBehaviour
 
     // Token: 0x04000669 RID: 1641
     public AudioSource baldiAudio;
- }
+}

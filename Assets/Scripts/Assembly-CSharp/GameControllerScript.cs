@@ -232,6 +232,10 @@ public class GameControllerScript : MonoBehaviour
 		this.spoopMode = true;
 		this.classTime = false;
 		this.exploreScript.exploreTimer = 0f;
+		foreach (GameObject gameObject in this.triggersToHide)
+		{
+			gameObject.SetActive(false);
+		}
 		this.entrance_0.Lower();
 		this.entrance_1.Lower();
 		this.entrance_2.Lower();
@@ -842,6 +846,8 @@ public class GameControllerScript : MonoBehaviour
 	public Texture[] petTextures = new Texture[3];
 
 	public GameObject[] notebooksToHide = new GameObject[6];
+
+	public GameObject[] triggersToHide = new GameObject[6];
 
 	// Token: 0x04000622 RID: 1570
 	public GameObject bsodaSpray;

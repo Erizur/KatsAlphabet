@@ -16,10 +16,11 @@ public class TriggerConsole : MonoBehaviour
 	}
 
 	// Token: 0x060009B7 RID: 2487 RVA: 0x00024DB0 File Offset: 0x000231B0
-	private void OnTriggerStay(Collider other)
+	private void OnTriggerEnter(Collider other)
 	{
-		if (other.gameObject.CompareTag("Player"))
+		if (other.gameObject.tag == "Player")
 		{
+			Debug.Log("Go to DevConsole");
 			SceneManager.LoadScene("DeveloperConsole");
 		}
 	}
