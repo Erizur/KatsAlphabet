@@ -27,6 +27,14 @@ public class OptionsManager : MonoBehaviour
             {
                 this.analog.isOn = false;
             }
+            if(PlayerPrefs.GetInt("DarkMode") == 1)
+            {
+                this.darkMode.isOn = true;
+            }
+            else
+            {
+                this.darkMode.isOn = false;
+            }
         }
         else
         {
@@ -54,6 +62,14 @@ public class OptionsManager : MonoBehaviour
         {
             PlayerPrefs.SetInt("AnalogMove", 0);
         }
+        if (this.darkMode.isOn)
+        {
+            PlayerPrefs.SetInt("DarkMode", 1);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("DarkMode", 0);
+        }
     }
 
     // Token: 0x0400006F RID: 111
@@ -64,4 +80,7 @@ public class OptionsManager : MonoBehaviour
 
     // Token: 0x04000071 RID: 113
     public Toggle analog;
+
+    // Token: 0x04000072 RID: 114
+    public Toggle darkMode;
 }
