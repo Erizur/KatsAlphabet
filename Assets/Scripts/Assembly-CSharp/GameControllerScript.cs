@@ -300,6 +300,7 @@ public class GameControllerScript : MonoBehaviour
 	// Token: 0x06000970 RID: 2416 RVA: 0x00022214 File Offset: 0x00020614
 	public void ActivateLearningGame()
 	{
+		this.player.stamina = this.player.maxStamina;
 		this.learningActive = true;
 		this.UnlockMouse();
 

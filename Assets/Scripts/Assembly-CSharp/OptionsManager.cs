@@ -1,13 +1,46 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 // Token: 0x0200001B RID: 27
 public class OptionsManager : MonoBehaviour
 {
-    // Token: 0x06000061 RID: 97 RVA: 0x000037B4 File Offset: 0x00001BB4
+    //used code from bambi racing, SHHHHHHHHHHHH
+    public Toggle fullscreenOpt, vsyncOpt;
+    public TMP_Dropdown resDrp;
+    private List<Resolution> resolutions = new List<Resolution>();
+    private int resIndex = 0;
+
     private void Start()
     {
+        fullscreenOpt.isOn = Screen.fullScreen;
+        vsyncOpt.isOn = (QualitySettings.vSyncCount == 0) ? false : true;
+
+        resolutions = Screen.resolutions.ToList();
+        List<string> resList = new List<string>();
+
+        foreach (Resolution res in resolutions)
+        {
+            resList.Add(res.ToString());
+        }
+
+        resDrp.AddOptions(resList);
+
+        bool foundRes = false;
+        for(int i = 0; i < resolutions.Count; i++)
+        {
+            if(resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
+            {
+                foundRes = true;
+                resIndex = i;
+            }
+        }
+
+        if(foundRes) resDrp.value = resIndex;
+
         if (PlayerPrefs.HasKey("OptionsSet"))
         {
             this.slider.value = PlayerPrefs.GetFloat("MouseSensitivity");
@@ -27,7 +60,7 @@ public class OptionsManager : MonoBehaviour
             {
                 this.analog.isOn = false;
             }
-            if(PlayerPrefs.GetInt("DarkMode") == 1)
+            if (PlayerPrefs.GetInt("DarkMode") == 1)
             {
                 this.darkMode.isOn = true;
             }
@@ -70,6 +103,25 @@ public class OptionsManager : MonoBehaviour
         {
             PlayerPrefs.SetInt("DarkMode", 0);
         }
+        if (this.vsyncOpt.isOn)
+        {
+            QualitySettings.vSyncCount = 1;
+        }
+        else
+        {
+            QualitySettings.vSyncCount = 0;
+        }
+    }
+
+    public void changeResIndex(int value)
+    {
+        resIndex = value;
+    }
+
+    public void ApplyChanges()
+    {
+        Screen.fullScreen = fullscreenOpt.isOn;
+        Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height, fullscreenOpt.isOn, resolutions[resIndex].refreshRate);
     }
 
     // Token: 0x0400006F RID: 111
