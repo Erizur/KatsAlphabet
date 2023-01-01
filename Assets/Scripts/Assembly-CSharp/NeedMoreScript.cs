@@ -7,7 +7,7 @@ public class NeedMoreScript : MonoBehaviour
 	// Token: 0x06000943 RID: 2371 RVA: 0x00021436 File Offset: 0x0001F836
 	private void OnTriggerEnter(Collider other)
 	{
-		if (this.gc.notebooks < 2 & other.tag == "Player" && !this.audioDevice.isPlaying)
+		if (this.gc.notebooks < 2 & other.tag == "Player" && !this.audioDevice.isPlaying && this.gc.mode != "roomchase")
 		{
 			this.audioDevice.PlayOneShot(this.baldiDoor, 1f);
 		}

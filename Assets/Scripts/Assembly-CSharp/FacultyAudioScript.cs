@@ -7,10 +7,10 @@ public class FacultyAudioScript : MonoBehaviour
     // Token: 0x06000943 RID: 2371 RVA: 0x00021436 File Offset: 0x0001F836
 	private void OnTriggerEnter(Collider other)
 	{
-		if (this.gc.notebooks >= 2 & other.tag == "Player" && this.gc.didWarning == false && this.gc.spoopMode == false)
+		if (this.gc.notebooks >= 2 & other.tag == "Player" && this.gc.didWarning == false && this.gc.spoopMode == false && this.gc.mode != "roomchase")
 		{
             this.gc.didWarning = true;
-            this.gc.schoolMusic.volume = 0.5f;
+            this.gc.schoolMusic.MPTK_Volume = 0.5f;
 			this.audioDevice.PlayOneShot(this.baldiDoor, 1f);
 		}
 	}

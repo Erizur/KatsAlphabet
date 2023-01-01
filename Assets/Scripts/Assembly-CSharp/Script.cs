@@ -14,6 +14,7 @@ public class Script : MonoBehaviour
 	{
 		if (!this.audioDevice.isPlaying & this.played)
 		{
+			Application.OpenURL("https://basically-games.itch.io/baldis-basics-plus");
 			Application.Quit();
 		}
 	}

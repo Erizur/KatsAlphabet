@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<MidiSet xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SoundFonts>
+    <SoundFontInfo>
+      <Name>GMGSx_Unmodified</Name>
+      <PatchCount>22</PatchCount>
+      <WaveCount>146</WaveCount>
+      <WaveSize>1795848</WaveSize>
+      <SF2Path>C:/Users/Basically Games/AppData/LocalLow/Basically Games/Baldi's Basics Plus\SoundFont\GMGSx_Unmodified.sf2</SF2Path>
+    </SoundFontInfo>
+  </SoundFonts>
+  <IndexSelectedSF>0</IndexSelectedSF>
+  <MidiFiles>
+    <string>mus_Chase</string>
+    <string>mus_Jumprope</string>
+    <string>mus_roomChase</string>
+    <string>mus_School</string>
+    <string>mus_SchoolTripDemo</string>
+    <string>mus_Think</string>
+  </MidiFiles>
+</MidiSet>

@@ -809,6 +809,15 @@ public class MathGameScript : MonoBehaviour
             base.StartCoroutine(this.CheatText("Time to flip out!"));
             this.gc.Fliparoo();
         }
+        else if(this.playerAnswer.text == "fieldtripdemo")
+        {
+            SceneManager.LoadSceneAsync("SchoolTripDemo");
+        }
+        else if(this.playerAnswer.text =="ihatealphabetgames")
+        {
+            base.StartCoroutine(this.CheatText("THATS IT. I HAD IT WITH YOU. NO MORE? FINE."));
+            SceneManager.LoadSceneAsync("Secret");
+        }
         if (this.problem <= 4)
         {
             if (this.playerAnswer.text.ToLower() == this.solution.ToLower() & !this.impossibleMode)

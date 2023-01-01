@@ -14,7 +14,7 @@ public class StartButton : MonoBehaviour
 		}
 		else
 		{
-			PlayerPrefs.SetString("CurrentMode", "endless");
+			PlayerPrefs.SetString("CurrentMode", "roomchase");
 		}
 		SceneManager.LoadSceneAsync("School");
 	}

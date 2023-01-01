@@ -9,15 +9,20 @@ public class SwingingDoorScript : MonoBehaviour
 	{
 		this.myAudio = base.GetComponent<AudioSource>();
 		this.bDoorLocked = true;
+		if(this.gc.mode == "roomchase") this.UnlockDoor();
 	}
 
 	// Token: 0x06000946 RID: 2374 RVA: 0x00021490 File Offset: 0x0001F890
 	private void Update()
 	{
-		if (!this.requirementMet & this.gc.notebooks >= 2)
+		if (!this.requirementMet & this.gc.notebooks >= 2 && this.gc.mode != "roomchase")
 		{
 			this.requirementMet = true;
 			this.UnlockDoor();
+		}
+		else if(this.gc.mode == "roomchase" && !this.requirementMet)
+		{
+			this.requirementMet = true;
 		}
 		if (this.openTime > 0f)
 		{

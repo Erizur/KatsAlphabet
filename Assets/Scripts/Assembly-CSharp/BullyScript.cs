@@ -78,10 +78,10 @@ public class BullyScript : MonoBehaviour
 			else
 			{
 				int chance = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 2f));
-				int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 2f));
+				int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 4f));
 				while (this.gc.item[num] == 0)
 				{
-					num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 2f));
+					num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 4f));
 				}
 				int randomItem = Mathf.RoundToInt(UnityEngine.Random.Range(1f, 9f));
 				switch(chance){

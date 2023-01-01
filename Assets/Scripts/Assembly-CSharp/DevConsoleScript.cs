@@ -95,7 +95,7 @@ public class DevConsoleScript : MonoBehaviour
                                 PrintConsoleText("Lscene: Mounting mulitple scenes is not supported yet.");
                             }
                         }
-                        else if(args[1] != "")
+                        else
                         {
                             PrintConsoleText("Lscene: Unknown scene '" + args[1] + "'.");
                         }
@@ -116,7 +116,6 @@ public class DevConsoleScript : MonoBehaviour
                         {
                             PrintConsoleText("Rscene: Loading scene...");
                             GenerateRandomText();
-                            SceneManager.LoadScene("Certificated");
                         }
                         else
                         {
@@ -165,11 +164,20 @@ public class DevConsoleScript : MonoBehaviour
 
     public void GenerateRandomText()
     {
-        //Fill the screen with random numbers
-        for (int i = 0; i < 9999; i++)
+        StartCoroutine(numberStuff());
+    }
+
+    IEnumerator numberStuff()
+    {
+        float secondsTilLoad = 3f;
+        while(secondsTilLoad > 0)
         {
-            int randomNumber = Random.Range(0, 9999);
-            outputText.text += randomNumber.ToString() + randomNumber.ToString() + randomNumber.ToString() + randomNumber.ToString() + "\n";
+            secondsTilLoad -= 0.01f;
+            int randomNumber = Random.Range(0,9);
+            outputText.text += randomNumber.ToString() + " ";
+            yield return new WaitForSeconds(0.01f);
         }
+        SceneManager.LoadScene("Certificated");
+
     }
 }

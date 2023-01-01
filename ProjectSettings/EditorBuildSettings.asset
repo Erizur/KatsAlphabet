@@ -35,4 +35,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scene/Scenes/TestRoom.unity
     guid: 1bfa5adc7f589b44e8be78189891a1dd
+  - enabled: 1
+    path: Assets/Scene/Scenes/SchoolTripDemo.unity
+    guid: dcb9f258c0d79764d8137f30cfa74672
   m_configObjects: {}
