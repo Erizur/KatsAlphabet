@@ -7,6 +7,7 @@ public class Script : MonoBehaviour
 	// Token: 0x0600091C RID: 2332 RVA: 0x00020AA5 File Offset: 0x0001EEA5
 	private void Start()
 	{
+		openedURL = false;
 	}
 
 	// Token: 0x0600091D RID: 2333 RVA: 0x00020AA7 File Offset: 0x0001EEA7
@@ -14,7 +15,11 @@ public class Script : MonoBehaviour
 	{
 		if (!this.audioDevice.isPlaying & this.played)
 		{
-			Application.OpenURL("https://basically-games.itch.io/baldis-basics-plus");
+			if(!openedURL)
+			{
+				Application.OpenURL("https://basically-games.itch.io/baldis-basics-plus");
+			}
+			openedURL = true;
 			Application.Quit();
 		}
 	}
@@ -34,4 +39,5 @@ public class Script : MonoBehaviour
 
 	// Token: 0x040005A8 RID: 1448
 	private bool played;
+	private bool openedURL;
 }

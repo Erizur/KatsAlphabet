@@ -50,14 +50,15 @@ public class GameControllerScript : MonoBehaviour
             this.entrance_3.Lower();
             this.preparationTime = 65f;
             this.notebooks = 3;
-
+            this.playerTransform.position = this.playerTeleport.transform.position;
+            this.player.transform.position = this.playerTransform.position;
             for (int i = 0; i < 3; i++)
             {
                 this.roomChaseMusic.MPTK_ChannelEnableSet(i, false);
             }
             this.hideRoomTriggers();
             this.gameStartTrigger.SetActive(false);
-            this.tpPlayerToClass();
+            this.StartCoroutine(this.tpPlayerToClass()); //double check, THIS SUCKS!
         }
         this.LockMouse();
         this.UpdateNotebookCount();
@@ -350,8 +351,9 @@ public class GameControllerScript : MonoBehaviour
         this.LockMouse();
     }
 
-    public void tpPlayerToClass()
+    IEnumerator tpPlayerToClass()
     {
+        yield return new WaitForSeconds(0.01f);
         this.player.transform.position = this.playerTeleport.transform.position;
     }
 
@@ -395,7 +397,8 @@ public class GameControllerScript : MonoBehaviour
             {
                 this.roomChaseMusic.MPTK_ChannelEnableSet(i, true);
             }
-            this.baldiScrpt.GetAngry(1f);
+            this.roomChaseMusic.MPTK_ChannelEnableSet(3, false);
+            this.baldiScrpt.GetAngry(0.5f);
             this.roomToShow = this.roomTriggers[Random.Range(0, this.roomTriggers.Length - 1)];
             this.roomTimeout = 80f;
             this.hideRoomTriggers();
@@ -432,23 +435,25 @@ public class GameControllerScript : MonoBehaviour
 
     public void RoomTriggerEvent()
     {
-        this.roomsReached++;
-        UpdateNotebookCount();
-        this.audioDevice.PlayOneShot(this.aud_bellRing);
-        this.GetAngry(1f);
-        this.baldiScrpt.GetTempAngry(0.8f);
-        this.roomTimeout = 0f;
         this.breakDownTime = 60f;
         this.breakTime = true;
+        this.roomsReached++;
+        this.UpdateNotebookCount();
+        this.audioDevice.PlayOneShot(this.aud_bellRing);
+        this.GetAngry(0.5f);
+        this.baldiScrpt.GetTempAngry(0.5f);
+        this.roomTimeout = 0f;
         this.SwitchChaseMid(true);
     }
 
     private void BadRoomEvent()
     {
-        this.baldiScrpt.GetTempAngry(6f);
         this.breakDownTime = 60f;
-        this.roomTimeout = 0f;
         this.breakTime = true;
+        this.roomToShow.SetActive(false);
+        this.audioDevice.PlayOneShot(this.aud_bellRing);
+        this.baldiScrpt.GetTempAngry(2f);
+        this.roomTimeout = 0f;
         this.SwitchChaseMid(true);
     }
 
@@ -456,17 +461,13 @@ public class GameControllerScript : MonoBehaviour
     {
         if (bigMoment)
         {
-            this.roomChaseMusic.MPTK_Stop();
-            this.roomChaseMusic.MPTK_MidiName = "mus_Chase";
-            this.roomChaseMusic.MPTK_Play();
-            this.roomChaseMusic.MPTK_Speed += 0.5f;
+            this.roomChaseMusic.MPTK_ChannelEnableSet(3, true);
+            this.roomChaseMusic.MPTK_Speed += 0.25f;
         }
         else
         {
-            this.roomChaseMusic.MPTK_Stop();
-            this.roomChaseMusic.MPTK_MidiName = "mus_roomChase";
-            this.roomChaseMusic.MPTK_Play();
-            this.roomChaseMusic.MPTK_Speed -= 0.5f;
+            this.roomChaseMusic.MPTK_ChannelEnableSet(3, false);
+            this.roomChaseMusic.MPTK_Speed -= 0.25f;
         }
 
     }

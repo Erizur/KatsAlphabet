@@ -58,7 +58,7 @@ public class CraftersScript : MonoBehaviour
 	// Token: 0x060009B0 RID: 2480 RVA: 0x00024BAC File Offset: 0x00022FAC
 	private void FixedUpdate()
 	{
-		if (this.gc.notebooks >= 7)
+		if (this.gc.notebooks >= 7 || this.gc.roomsReached >= 4)
 		{
 			Vector3 direction = this.player.position - base.transform.position;
 			RaycastHit raycastHit;

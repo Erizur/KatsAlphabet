@@ -12,6 +12,10 @@ public class StartButton : MonoBehaviour
 		{
 			PlayerPrefs.SetString("CurrentMode", "story");
 		}
+		else if(this.currentMode == StartButton.Mode.Endless)
+		{
+			PlayerPrefs.SetString("CurrentMode", "endless");
+		}
 		else
 		{
 			PlayerPrefs.SetString("CurrentMode", "roomchase");
@@ -28,6 +32,7 @@ public class StartButton : MonoBehaviour
 		// Token: 0x04000717 RID: 1815
 		Story,
 		// Token: 0x04000718 RID: 1816
-		Endless
+		Endless,
+		RoomChase
 	}
 }
